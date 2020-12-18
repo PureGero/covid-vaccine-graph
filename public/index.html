@@ -57,6 +57,11 @@
 
           // Configuration options go here
           options: {
+            elements: {
+              line: {
+                tension: 0
+              }
+            },
             responsive: true,
             title: {
               display: true,
@@ -75,6 +80,9 @@
                 scaleLabel: {
                   display: true,
                   labelString: 'Doses given'
+                },
+                ticks: {
+                  beginAtZero: true
                 }
               }]
             }
