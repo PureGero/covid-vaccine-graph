@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Covid Vaccine Trends</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+      }
+
+      @media only screen and (min-width: 900px) {
+        body {
+          margin: 0 5%;
+        }
+      }
+
+      @media only screen and (min-width: 1400px) {
+        body {
+          margin: 0 10%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <p>Data source: <a href="https://github.com/owid/covid-19-data/tree/master/public/data">Our World in Data</a></p>
+    <small>Created by Ethan Bulmer © 2020</small>
+    <script>
+      var getJSON = function(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+          var status = xhr.status;
+          if (status === 200) {
+            callback(null, xhr.response);
+          } else {
+            callback(status, xhr.response);
+          }
+        };
+        xhr.send();
+      };
+
+      getJSON('data.json', function(error, data) {
+        if (error) {
+          return document.write('<h1>Failed to load data</h1><p>' + error + ': ' + data + '</p>');
+        }
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'line',
+
+          // The data for our dataset
+          data: data,
+
+          // Configuration options go here
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Covid Vaccine Trends'
+            },
+            scales: {
+              xAxes: [{
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Date'
+                }
+              }],
+              yAxes: [{
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Doses given'
+                }
+              }]
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

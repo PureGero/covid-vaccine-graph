@@ -1,0 +1,22 @@
+{
+  "name": "covid-vaccine-graph",
+  "version": "1.0.0",
+  "description": "Graph of the covid vaccine doses worldwide",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PureGero/covid-vaccine-graph.git"
+  },
+  "author": "PureGero",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/PureGero/covid-vaccine-graph/issues"
+  },
+  "homepage": "https://github.com/PureGero/covid-vaccine-graph#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
