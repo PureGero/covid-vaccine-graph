@@ -1,4 +1,3 @@
-const express = require('express');
 const fs = require('fs');
 const https = require('https');
 
@@ -7,7 +6,11 @@ const COVID_DATA_URL = 'https://raw.githubusercontent.com/owid/covid-19-data/mas
 const COVID_DATA_FILE = 'public/data.json'
 const FIRST_DATE = '2020-12-02';
 
-const app = express();
+const args = {};
+
+process.argv.forEach(arg => {
+  args[arg] = true;
+});
 
 // Get the covid data from COVID_DATA_URL and parse the json into parseCovidData
 function getCovidData() {
@@ -91,9 +94,14 @@ Object.defineProperty(String.prototype, 'hashCode', {
 });
 
 getCovidData();
-setInterval(getCovidData, 1 * 60 * 60 * 1000); // Run every hour
 
-app.use(express.static('public'));
-app.listen(PORT, () => {
-  console.log(`Example app listening at http://localhost:${PORT}`);
-});
+if (!args['--noserver']) {
+  setInterval(getCovidData, 1 * 60 * 60 * 1000); // Run every hour
+  
+  const express = require('express');
+  const app = express();
+  app.use(express.static('public'));
+  app.listen(PORT, () => {
+    console.log(`Example app listening at http://localhost:${PORT}`);
+  });
+}
