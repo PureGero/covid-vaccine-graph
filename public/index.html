@@ -64,10 +64,16 @@
     <div class="container">
       <canvas id="myChart"></canvas>
     </div>
+    <select id="y-axis-option" onchange="updateGraph()">
+      <option value="total">Total doses given per country</option>
+      <option value="percent">Doses given as a percentage of the population</option>
+    </select>
     <p>The number of people vaccinated for covid-19 per country over time displayed on a line-graph.</p>
     <p>Data source: <a href="https://github.com/owid/covid-19-data/tree/master/public/data">Our World in Data</a></p>
     <small>Created by Ethan Bulmer © 2020</small>
     <script>
+      var chart = null;
+
       var getJSON = function(url, callback) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
@@ -83,13 +89,34 @@
         xhr.send();
       };
 
+      function updateGraph() {
+        if (document.getElementById('y-axis-option').value == 'percent') {
+          chart.options.scales.yAxes[0].scaleLabel.labelString = 'Doses given (% of population)';
+          chart.data.datasets.forEach(dat => {
+            dat.data = dat.data_percent;
+          });
+        } else {
+          chart.options.scales.yAxes[0].scaleLabel.labelString = 'Doses given';
+          chart.data.datasets.forEach(dat => {
+            dat.data = dat.data_total;
+          });
+        }
+
+        chart.update();
+      }
+
       getJSON('data.json', function(error, data) {
         if (error) {
           return document.write('<h1>Failed to load data</h1><p>' + error + ': ' + data + '</p>');
         }
 
+        data.datasets.forEach(dat => {
+          dat.backgroundColor = dat.borderColor;
+          dat.data = dat.data_total;
+        });
+
         var ctx = document.getElementById('myChart').getContext('2d');
-        var chart = new Chart(ctx, {
+        chart = new Chart(ctx, {
           // The type of chart we want to create
           type: 'line',
 

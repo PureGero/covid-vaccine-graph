@@ -43,27 +43,29 @@ function parseCovidData(json) {
   // For each country
   Object.keys(json).forEach(key => {
     const country = json[key];
-    const data = [];
+    const data_total = [];
+    const data_percent = [];
 
     // Populate their data
     json[key].data.forEach(dat => {
       if (new Date(dat.date) >= new Date(FIRST_DATE)) {
-        data.push(dat.total_vaccinations);
+        data_total.push(dat.total_vaccinations);
+        data_percent.push(dat.total_vaccinations_per_hundred);
 
-        if (data.length > labels.length) {
+        if (data_total.length > labels.length) {
           labels.push(dat.date);
         }
       }
     });
 
     // Add them if they have any data
-    if (data.filter(dat => dat).length > 0) {
+    if (data_total.filter(dat => dat).length > 0) {
       datasets.push({
         label: country.location,
-        backgroundColor: randomColour(country.location),
         borderColor: randomColour(country.location),
         fill: false,
-        data: data
+        data_total: data_total,
+        data_percent: data_percent
       });
     }
   });
