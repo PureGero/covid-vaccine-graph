@@ -48,7 +48,7 @@ function parseCovidData(json) {
     // Populate their data
     json[key].data.forEach(dat => {
       if (new Date(dat.date) >= new Date(FIRST_DATE)) {
-        data.push(dat.total_vaccinations || data[data.length - 1]);
+        data.push(dat.total_vaccinations);
 
         if (data.length > labels.length) {
           labels.push(dat.date);
