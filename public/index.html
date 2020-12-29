@@ -17,7 +17,7 @@
     <meta property="og:url" content="https://ethanbulmer.com/vaccinetrends/">
     <meta name="twitter:card" content="summary_large_image">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="chart.min.js"></script>
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif;
@@ -64,10 +64,18 @@
     <div class="container">
       <canvas id="myChart"></canvas>
     </div>
-    <select id="y-axis-option" onchange="updateGraph()">
-      <option value="total">Total doses given per country</option>
-      <option value="percent">Doses given as a percentage of the population</option>
-    </select>
+    <p>
+      <select id="y-axis-option" onchange="updateGraph()">
+        <option value="total">Total doses given per country</option>
+        <option value="percent">Doses given as a percentage of the population</option>
+      </select>
+    </p>
+    <p>
+      <select id="y-axis-type" onchange="updateGraph()">
+        <option value="logarithmic">Logarithmic</option>
+        <option value="linear">Linear</option>
+      </select>
+    </p>
     <p>The number of people vaccinated for covid-19 per country over time displayed on a line-graph.</p>
     <p>Data source: <a href="https://github.com/owid/covid-19-data/tree/master/public/data">Our World in Data</a></p>
     <small>Created by Ethan Bulmer © 2020</small>
@@ -91,16 +99,18 @@
 
       function updateGraph() {
         if (document.getElementById('y-axis-option').value == 'percent') {
-          chart.options.scales.yAxes[0].scaleLabel.labelString = 'Doses given (% of population)';
+          chart.options.scales.y.scaleLabel.labelString = 'Doses given (% of population)';
           chart.data.datasets.forEach(dat => {
             dat.data = dat.data_percent;
           });
         } else {
-          chart.options.scales.yAxes[0].scaleLabel.labelString = 'Doses given';
+          chart.options.scales.y.scaleLabel.labelString = 'Doses given';
           chart.data.datasets.forEach(dat => {
             dat.data = dat.data_total;
           });
         }
+
+        chart.options.scales.y.type = document.getElementById('y-axis-type').value;
 
         chart.update();
       }
@@ -125,6 +135,12 @@
 
           // Configuration options go here
           options: {
+            plugins: {
+              title: {
+                display: true,
+                text: 'Covid Vaccine Trends'
+              },
+            },
             spanGaps: true,
             elements: {
               line: {
@@ -133,20 +149,21 @@
             },
             maintainAspectRatio: false,
             responsive: true,
-            title: {
-              display: true,
-              text: 'Covid Vaccine Trends'
+            interaction: {
+              mode: 'point',
+              intersect: true
             },
             scales: {
-              xAxes: [{
+              x: {
                 display: true,
                 scaleLabel: {
                   display: true,
                   labelString: 'Date'
                 }
-              }],
-              yAxes: [{
+              },
+              y: {
                 display: true,
+                type: 'logarithmic',
                 scaleLabel: {
                   display: true,
                   labelString: 'Doses given'
@@ -154,7 +171,7 @@
                 ticks: {
                   beginAtZero: true
                 }
-              }]
+              }
             }
           }
         });

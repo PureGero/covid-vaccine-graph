@@ -4,7 +4,7 @@ const https = require('https');
 const PORT = 80;
 const COVID_DATA_URL = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.json';
 const COVID_DATA_FILE = 'public/data.json'
-const FIRST_DATE = '2020-12-02';
+const FIRST_DATE = '2020-12-14';
 
 const args = {};
 
