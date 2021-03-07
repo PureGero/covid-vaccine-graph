@@ -144,15 +144,15 @@
         chart.update();
       }
 
-      getJSON('http://ip-api.com/json/', function(error, data) {
+      getJSON('https://ipapi.co/json/', function(error, data) {
         if (error) return console.error(error);
 
         if (data.country) {
-          defaultShownDatasets.push(data.country);
+          defaultShownDatasets.push(data.country_name);
 
           if (chart) {
             chart.data.datasets.forEach(dat => {
-              if (dat.label == data.country) {
+              if (dat.label == data.country_name) {
                 dat.hidden = false;
                 chart.update();
               }
