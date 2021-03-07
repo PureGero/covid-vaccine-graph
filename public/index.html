@@ -82,6 +82,19 @@
     <script>
       var chart = null;
 
+      var gdpTop8 = [
+        'United States',
+        'China',
+        'Japan',
+        'Germany',
+        'India',
+        'United Kingdom',
+        'France',
+        'Italy'
+      ];
+
+      var defaultShownDatasets = gdpTop8;
+
       var getJSON = function(url, callback) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
@@ -112,17 +125,88 @@
 
         chart.options.scales.y.type = document.getElementById('y-axis-type').value;
 
+        if (chart.options.scales.y.type == 'logarithmic') {
+          chart.data.datasets.forEach(dat => {
+            for (var i = 0; i < dat.data.length; i++) {
+              if (document.getElementById('y-axis-option').value == 'percent') {
+                if (dat.data[i] <= 0.01) {
+                  dat.data[i] = null;
+                }
+              } else {
+                if (dat.data[i] < 1000) {
+                  dat.data[i] = null;
+                }
+              }
+            }
+          });
+        }
+
         chart.update();
       }
+
+      getJSON('https://ip-api.com/json/', function(error, data) {
+        if (error) return console.error(error);
+
+        if (data.country) {
+          defaultShownDatasets.push(data.country);
+
+          if (chart) {
+            chart.data.datasets.forEach(dat => {
+              if (dat.label == data.country) {
+                dat.hidden = false;
+                chart.update();
+              }
+            });
+          }
+        }
+      });
 
       getJSON('data.json', function(error, data) {
         if (error) {
           return document.write('<h1>Failed to load data</h1><p>' + error + ': ' + data + '</p>');
         }
 
+        var countries = [];
+
         data.datasets.forEach(dat => {
           dat.backgroundColor = dat.borderColor;
           dat.data = dat.data_total;
+
+          countries.push({
+            label: dat.label,
+            total: dat.data_total[dat.data_total.length - 1],
+            percent: dat.data_percent[dat.data_percent.length - 1],
+            growth1day: dat.data_total[dat.data_total.length - 2] > 1000 ? dat.data_total[dat.data_total.length - 1] / dat.data_total[dat.data_total.length - 2] : 0,
+            growth5day: dat.data_total[dat.data_total.length - 6] > 1000 ? dat.data_total[dat.data_total.length - 1] / dat.data_total[dat.data_total.length - 6] : 0
+          });
+        });
+
+        countries.sort((a, b) => b.total - a.total);
+        defaultShownDatasets.push(countries[0].label);
+        defaultShownDatasets.push(countries[1].label);
+        defaultShownDatasets.push(countries[2].label);
+        defaultShownDatasets.push(countries[3].label);
+
+        countries.sort((a, b) => b.percent - a.percent);
+        defaultShownDatasets.push(countries[0].label);
+        defaultShownDatasets.push(countries[1].label);
+        defaultShownDatasets.push(countries[2].label);
+        defaultShownDatasets.push(countries[3].label);
+
+        countries.sort((a, b) => b.growth1day - a.growth1day);
+        defaultShownDatasets.push(countries[0].label);
+        defaultShownDatasets.push(countries[1].label);
+        defaultShownDatasets.push(countries[2].label);
+        defaultShownDatasets.push(countries[3].label);
+
+        countries.sort((a, b) => b.growth5day - a.growth5day);
+        defaultShownDatasets.push(countries[0].label);
+        defaultShownDatasets.push(countries[1].label);
+        defaultShownDatasets.push(countries[2].label);
+        defaultShownDatasets.push(countries[3].label);
+
+        data.datasets.forEach(dat => {
+          dat.hidden = !~defaultShownDatasets.indexOf(dat.label);
         });
 
         var ctx = document.getElementById('myChart').getContext('2d');
@@ -169,12 +253,14 @@
                   labelString: 'Doses given'
                 },
                 ticks: {
-                  beginAtZero: true
+                  beginAtZero: false
                 }
               }
             }
           }
         });
+
+        updateGraph();
       });
     </script>
   </body>
