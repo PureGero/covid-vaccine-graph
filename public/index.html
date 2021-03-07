@@ -174,10 +174,10 @@
 
           countries.push({
             label: dat.label,
-            total: dat.data_total[dat.data_total.length - 1],
-            percent: dat.data_percent[dat.data_percent.length - 1],
-            growth1day: dat.data_total[dat.data_total.length - 2] > 1000 ? dat.data_total[dat.data_total.length - 1] / dat.data_total[dat.data_total.length - 2] : 0,
-            growth5day: dat.data_total[dat.data_total.length - 6] > 1000 ? dat.data_total[dat.data_total.length - 1] / dat.data_total[dat.data_total.length - 6] : 0
+            total: dat.data_total[dat.data_total.length - 2],
+            percent: dat.data_percent[dat.data_percent.length - 2],
+            growth1day: dat.data_total[dat.data_total.length - 3] > 1000 ? dat.data_total[dat.data_total.length - 2] / dat.data_total[dat.data_total.length - 3] : 0,
+            growth5day: dat.data_total[dat.data_total.length - 7] > 1000 ? dat.data_total[dat.data_total.length - 2] / dat.data_total[dat.data_total.length - 7] : 0
           });
         });
 
